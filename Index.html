@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem & Dashboard Kelas 9E</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        kelas: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+        .glass { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); }
+        .dark .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); }
+        .fade-in { animation: fadeIn 0.25s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 h-full flex flex-col font-sans transition-colors duration-200">
+
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="sticky top-0 z-30 glass border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo & Class Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-md shadow-sky-500/20">
+                    9E
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent dark:from-sky-400 dark:to-indigo-400">
+                        CLASS 9E PORTAL
+                    </h1>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Solidarity, Excellence & Creativity</p>
+                </div>
+            </div>
+
+            <!-- Action Controls (Dev Mode, Dark/Light Toggle, Status) -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <!-- Dev Mode Status Badge -->
+                <div id="devBadge" class="hidden flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> Developer Mode
+                </div>
+
+                <!-- Toggle Theme Button -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition">
+                    <i data-lucide="moon" id="themeIconDark" class="w-5 h-5 hidden"></i>
+                    <i data-lucide="sun" id="themeIconLight" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Developer Mode Lock/Unlock Button -->
+                <button id="devBtn" onclick="toggleDevMode()" class="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 dark:bg-sky-600 dark:hover:bg-sky-500 shadow-sm transition active:scale-95">
+                    <i data-lucide="lock" id="devLockIcon" class="w-4 h-4"></i>
+                    <span id="devBtnText">Developer Mode</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6 overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION MENU -->
+        <aside class="w-full md:w-64 shrink-0 flex flex-col gap-2">
+            <nav class="bg-white dark:bg-slate-900 rounded-2xl p-2.5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+                <button onclick="switchTab('mading')" id="nav-mading" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-sky-500 text-white shadow-md shadow-sky-500/20">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Mading & Tugas</span>
+                </button>
+                <button onclick="switchTab('galeri')" id="nav-galeri" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="image" class="w-4 h-4"></i><span>Galeri Foto 9E</span>
+                </button>
+                <button onclick="switchTab('struktur')" id="nav-struktur" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="users-2" class="w-4 h-4"></i><span>Pengurus Kelas</span>
+                </button>
+                <button onclick="switchTab('jadwal')" id="nav-jadwal" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="calendar" class="w-4 h-4"></i><span>Jadwal & Piket</span>
+                </button>
+                <button onclick="switchTab('murid')" id="nav-murid" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Daftar Siswa</span>
+                </button>
+            </nav>
+
+            <!-- DEV DATA MANAGEMENT CARD -->
+            <div id="devControlsCard" class="hidden bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-4 space-y-3">
+                <h4 class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center">
+                    <i data-lucide="database" class="w-3.5 h-3.5 mr-1.5"></i> Data LocalStorage (Dev)
+                </h4>
+                <p class="text-[11px] text-amber-700/80 dark:text-amber-400/80">Simpan cadangan atau reset data kelas kembali ke awal.</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportData()" class="px-2.5 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition flex justify-center items-center">
+                        <i data-lucide="download" class="w-3 h-3 mr-1"></i> Export
+                    </button>
+                    <button onclick="importDataTrigger()" class="px-2.5 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition flex justify-center items-center">
+                        <i data-lucide="upload" class="w-3 h-3 mr-1"></i> Import
+                    </button>
+                    <input type="file" id="importFileInput" onchange="importData(event)" class="hidden" accept=".json">
+                </div>
+                <button onclick="resetData()" class="w-full px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition flex justify-center items-center">
+                    <i data-lucide="rotate-ccw" class="w-3 h-3 mr-1"></i> Reset Ke Default
+                </button>
+            </div>
+        </aside>
+
+        <!-- TAB CONTENTS -->
+        <main class="flex-1 overflow-y-auto">
+            
+            <!-- SECTION 1: MADING & TUGAS KELAS -->
+            <section id="tab-mading" class="fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100">Mading Digital & Tugas</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Info PR, jadwal ujian, dan pengumuman terbaru 9E.</p>
+                    </div>
+                    <button onclick="openMadingModal()" class="dev-only hidden px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition items-center self-start sm:self-auto">
+                        <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Tambah Pengumuman
+                    </button>
+                </div>
+
+                <div id="madingList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic Items render here -->
+                </div>
+            </section>
+
+            <!-- SECTION 2: GALERI FOTO 9E -->
+            <section id="tab-galeri" class="hidden fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100">Galeri & Dokumentasi</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Kumpulan momen kebersamaan dan kegiatan siswa kelas 9E.</p>
+                    </div>
+                    <button onclick="openGaleriModal()" class="dev-only hidden px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition items-center self-start sm:self-auto">
+                        <i data-lucide="image-plus" class="w-4 h-4 mr-1"></i> Upload Foto Baru
+                    </button>
+                </div>
+
+                <div id="galeriList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Dynamic Gallery Photos render here -->
+                </div>
+            </section>
+
+            <!-- SECTION 3: STRUKTUR ORGANISASI KELAS -->
+            <section id="tab-struktur" class="hidden fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100">Pengurus Kelas 9E</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Struktur kepengurusan dan wali kelas periode ajaran ini.</p>
+                    </div>
+                </div>
+
+                <div id="strukturList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Dynamic Cards render here -->
+                </div>
+            </section>
+
+            <!-- SECTION 4: JADWAL PELAJARAN & PIKET -->
+            <section id="tab-jadwal" class="hidden fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100">Jadwal Pelajaran & Piket</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Informasi kegiatan rutin harian Senin sampai Jumat.</p>
+                    </div>
+                </div>
+
+                <!-- Day Selector Tabs -->
+                <div id="daySelector" class="flex overflow-x-auto gap-2 pb-1 border-b border-slate-200 dark:border-slate-800">
+                    <!-- Dynamic Buttons -->
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Map Pelajaran Card -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center">
+                                <i data-lucide="book-open" class="w-4 h-4 mr-2 text-sky-500"></i> Mata Pelajaran
+                            </h3>
+                            <button onclick="openJadwalModal('mapel')" class="dev-only hidden px-2.5 py-1 bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 rounded-lg text-xs font-semibold hover:bg-sky-200 transition">
+                                + Mapel
+                            </button>
+                        </div>
+                        <ul id="mapelList" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                            <!-- Dynamic Mapel -->
+                        </ul>
+                    </div>
+
+                    <!-- Member Piket Card -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center">
+                                <i data-lucide="sparkles" class="w-4 h-4 mr-2 text-amber-500"></i> Tim Piket Harian
+                            </h3>
+                            <button onclick="openJadwalModal('piket')" class="dev-only hidden px-2.5 py-1 bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-semibold hover:bg-amber-200 transition">
+                                + Petugas
+                            </button>
+                        </div>
+                        <div id="piketList" class="flex flex-wrap gap-2">
+                            <!-- Dynamic Piket Badges -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: DAFTAR MURID (STUDENT DIRECTORY) -->
+            <section id="tab-murid" class="hidden fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100">Anggota Kelas (Murid)</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Daftar siswa dan siswi kelas 9E lengkap.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="relative">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                            <input type="text" id="searchMuridInput" onkeyup="renderMurid()" placeholder="Cari murid..." class="pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        </div>
+                        <button onclick="openMuridModal()" class="dev-only hidden px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition whitespace-nowrap">
+                            + Siswa
+                        </button>
+                    </div>
+                </div>
+
+                <div id="muridList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic Murid render here -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODALS FOR DEVELOPER EDITING -->
+
+    <!-- Modal Form: Mading/Tugas -->
+    <div id="madingModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Tambah / Edit Pengumuman</h3>
+            <form onsubmit="saveMading(event)" class="space-y-3">
+                <input type="hidden" id="madingId">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Judul / Kategori</label>
+                    <input type="text" id="madingJudul" required placeholder="Contoh: PR Matematika Bab 3" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Tipe</label>
+                    <select id="madingTipe" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                        <option value="Tugas">Tugas / PR</option>
+                        <option value="Pengumuman">Pengumuman</option>
+                        <option value="Ujian">Info Ujian</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Deskripsi & Tenggat</label>
+                    <textarea id="madingIsi" rows="3" required placeholder="Detail pengumuman..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('madingModal')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form: Galeri Foto -->
+    <div id="galeriModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Tambah Foto Galeri</h3>
+            <form onsubmit="saveGaleri(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Judul / Momen Foto</label>
+                    <input type="text" id="galeriJudul" required placeholder="Contoh: Classmeeting Futsal" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Upload File Foto</label>
+                    <input type="file" id="galeriFileInput" accept="image/*" onchange="handleImageUpload(event, 'galeriPreview')" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100">
+                </div>
+                <div class="text-center text-[10px] text-slate-400 font-semibold">-- ATAU GUNAKAN URL --</div>
+                <div>
+                    <input type="url" id="galeriUrl" placeholder="https://..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                </div>
+                <div class="h-28 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-700">
+                    <img id="galeriPreview" src="" class="h-full w-full object-cover hidden">
+                    <span id="galeriPreviewPlaceholder" class="text-xs text-slate-400">Preview Foto</span>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('galeriModal')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold">Simpan Foto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form: Edit Pengurus Struktur -->
+    <div id="strukturModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Edit Pengurus Kelas</h3>
+            <form onsubmit="saveStruktur(event)" class="space-y-3">
+                <input type="hidden" id="strukturId">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Jabatan</label>
+                    <input type="text" id="strukturJabatan" readonly class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Nama Pengurus</label>
+                    <input type="text" id="strukturNama" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Upload Foto / Avatar</label>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'strukturPreview')" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700">
+                </div>
+                <div class="h-24 w-24 mx-auto rounded-full overflow-hidden border-2 border-sky-500 flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                    <img id="strukturPreview" src="" class="h-full w-full object-cover">
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('strukturModal')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold">Update Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form: Murid Baru/Edit -->
+    <div id="muridModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Tambah / Edit Data Murid</h3>
+            <form onsubmit="saveMurid(event)" class="space-y-3">
+                <input type="hidden" id="muridId">
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-semibold mb-1">No Absen</label>
+                        <input type="number" id="muridAbsen" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-semibold mb-1">Nama Lengkap</label>
+                        <input type="text" id="muridNama" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Cita-Cita / Hobi</label>
+                    <input type="text" id="muridHobi" placeholder="Contoh: Programmer / Basket" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Foto Profil</label>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'muridPreview')" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700">
+                </div>
+                <div class="h-20 w-20 mx-auto rounded-full overflow-hidden border-2 border-sky-500 flex items-center justify-center bg-slate-100">
+                    <img id="muridPreview" src="" class="h-full w-full object-cover">
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('muridModal')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold">Simpan Murid</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // Default Mock Initial Data
+        const defaultData = {
+            mading: [
+                { id: 'm1', judul: 'PR Matematika Bab 3', tipe: 'Tugas', isi: 'Kerjakan soal hal 84 nomor 1-10 di buku tugas.', status: 'Belum' },
+                { id: 'm2', judul: 'Foto Untuk Buku Tahunan', tipe: 'Pengumuman', isi: 'Bawa seragam batik lengkap untuk sesi foto hari Kamis.', status: 'Selesai' }
+            ],
+            galeri: [
+                { id: 'g1', judul: 'Juara 1 Futsal Classmeeting', url: 'https://images.unsplash.com/photo-1511886929837-354d827aae26?w=600&auto=format&fit=crop&q=80' },
+                { id: 'g2', judul: 'Ulang Tahun Wali Kelas', url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop&q=80' }
+            ],
+            struktur: [
+                { id: 's1', jabatan: 'Wali Kelas', nama: 'Ibu Nurtjahjani, S.Pd', foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&auto=format&fit=crop&q=80' },
+                { id: 's2', jabatan: 'Ketua Kelas', nama: 'Farhan Rizky', foto: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&auto=format&fit=crop&q=80' },
+                { id: 's3', jabatan: 'Wakil Ketua', nama: 'Alya Rohali', foto: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&auto=format&fit=crop&q=80' },
+                { id: 's4', jabatan: 'Sekretaris', nama: 'Nabila Putri', foto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80' },
+                { id: 's5', jabatan: 'Bendahara', nama: 'Kevin Sanjaya', foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80' }
+            ],
+            jadwal: {
+                Senin: { mapel: ['07:00 - Upacara Bendera', '08:00 - Matematika', '10:00 - Bahasa Indonesia', '12:30 - IPA Terpadu'], piket: ['Farhan', 'Alya', 'Budi', 'Siti'] },
+                Selasa: { mapel: ['07:15 - Bahasa Inggris', '09:30 - IPS', '11:00 - Seni Budaya'], piket: ['Nabila', 'Kevin', 'Deni', 'Rina'] },
+                Rabu: { mapel: ['07:15 - Penjaskes (Olahraga)', '09:30 - PAI', '11:00 - PKn'], piket: ['Eko', 'Maya', 'Doni', 'Lia'] },
+                Kamis: { mapel: ['07:15 - Prakarya', '09:30 - Matematika', '11:00 - B. Indonesia'], piket: ['Gita', 'Hendra', 'Tari', 'Zaky'] },
+                Jumat: { mapel: ['07:00 - Senam / Imtaq', '08:30 - Informatika', '10:00 - B. Daerah'], piket: ['Rizky', 'Anisa', 'Fahri', 'Ayu'] }
+            },
+            murid: [
+                { id: 'u1', absen: 1, nama: 'Alya Rohali', hobi: 'Membaca & Debat', foto: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&auto=format&fit=crop&q=80' },
+                { id: 'u2', absen: 2, nama: 'Budi Santoso', hobi: 'Main Game & Coding', foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80' },
+                { id: 'u3', absen: 3, nama: 'Farhan Rizky', hobi: 'Futsal & Musik', foto: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&auto=format&fit=crop&q=80' },
+                { id: 'u4', absen: 4, nama: 'Kevin Sanjaya', hobi: 'Bulu Tangkis', foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80' },
+                { id: 'u5', absen: 5, nama: 'Nabila Putri', hobi: 'Melukis & Menulis', foto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80' }
+            ]
+        };
+
+        // State Variables
+        let db = JSON.parse(localStorage.getItem('kelas9e_db')) || defaultData;
+        let isDevMode = false;
+        let activeDay = 'Senin';
+        let currentUploadedBase64 = '';
+
+        // Save DB to LocalStorage
+        function saveDB() {
+            localStorage.setItem('kelas9e_db', JSON.stringify(db));
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderAll();
+        });
+
+        function renderAll() {
+            renderMading();
+            renderGaleri();
+            renderStruktur();
+            renderJadwal();
+            renderMurid();
+        }
+
+        // --- DEVELOPER MODE & AUTH ---
+        function toggleDevMode() {
+            if(!isDevMode) {
+                const pass = prompt("Masukkan Passcode Developer (Default: 9999):");
+                if(pass === "9999" || pass === "dev123") {
+                    isDevMode = true;
+                    updateDevUI();
+                    alert("Developer Mode Aktif! Anda dapat menambah/mengedit data.");
+                } else if(pass !== null) {
+                    alert("Passcode Salah!");
+                }
+            } else {
+                isDevMode = false;
+                updateDevUI();
+            }
+        }
+
+        function updateDevUI() {
+            const devElements = document.querySelectorAll('.dev-only');
+            const devBadge = document.getElementById('devBadge');
+            const devBtnText = document.getElementById('devBtnText');
+            const devLockIcon = document.getElementById('devLockIcon');
+            const devCard = document.getElementById('devControlsCard');
+
+            if(isDevMode) {
+                devElements.forEach(el => el.classList.remove('hidden'));
+                devBadge.classList.remove('hidden');
+                devCard.classList.remove('hidden');
+                devBtnText.innerText = "Keluar Dev Mode";
+                devLockIcon.setAttribute('data-lucide', 'unlock');
+            } else {
+                devElements.forEach(el => el.classList.add('hidden'));
+                devBadge.classList.add('hidden');
+                devCard.classList.add('hidden');
+                devBtnText.innerText = "Developer Mode";
+                devLockIcon.setAttribute('data-lucide', 'lock');
+            }
+            lucide.createIcons();
+        }
+
+        // --- TAB NAVIGATION ---
+        function switchTab(tabId) {
+            ['mading', 'galeri', 'struktur', 'jadwal', 'murid'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t}`);
+                btn.className = "nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition";
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.className = "nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition bg-sky-500 text-white shadow-md shadow-sky-500/20";
+        }
+
+        // --- RENDER MADING ---
+        function renderMading() {
+            const container = document.getElementById('madingList');
+            container.innerHTML = db.mading.map(item => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3 relative">
+                    <div class="flex justify-between items-start">
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${item.tipe==='Tugas'?'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300':'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300'}">
+                            ${item.tipe}
+                        </span>
+                        <div class="dev-only hidden flex space-x-1">
+                            <button onclick="deleteMading('${item.id}')" class="p-1 text-red-500 hover:bg-red-50 rounded"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100">${item.judul}</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">${item.isi}</p>
+                    </div>
+                </div>
+            `).join('');
+            updateDevUI();
+        }
+
+        function openMadingModal() {
+            document.getElementById('madingModal').classList.remove('hidden');
+        }
+
+        function saveMading(e) {
+            e.preventDefault();
+            const newItem = {
+                id: 'm_' + Date.now(),
+                judul: document.getElementById('madingJudul').value,
+                tipe: document.getElementById('madingTipe').value,
+                isi: document.getElementById('madingIsi').value,
+                status: 'Belum'
+            };
+            db.mading.unshift(newItem);
+            saveDB();
+            renderMading();
+            closeModal('madingModal');
+            e.target.reset();
+        }
+
+        function deleteMading(id) {
+            if(confirm("Hapus pengumuman ini?")) {
+                db.mading = db.mading.filter(i => i.id !== id);
+                saveDB();
+                renderMading();
+            }
+        }
+
+        // --- RENDER GALERI FOTO ---
+        function renderGaleri() {
+            const container = document.getElementById('galeriList');
+            container.innerHTML = db.galeri.map(item => `
+                <div class="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                        <img src="${item.url}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-3 flex justify-between items-center">
+                        <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">${item.judul}</span>
+                        <button onclick="deleteGaleri('${item.id}')" class="dev-only hidden p-1 text-red-500 hover:bg-red-50 rounded shrink-0">
+                            <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            updateDevUI();
+        }
+
+        function openGaleriModal() {
+            currentUploadedBase64 = '';
+            document.getElementById('galeriPreview').classList.add('hidden');
+            document.getElementById('galeriPreviewPlaceholder').classList.remove('hidden');
+            document.getElementById('galeriModal').classList.remove('hidden');
+        }
+
+        function saveGaleri(e) {
+            e.preventDefault();
+            const urlInput = document.getElementById('galeriUrl').value;
+            const finalUrl = currentUploadedBase64 || urlInput || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80';
+
+            db.galeri.unshift({
+                id: 'g_' + Date.now(),
+                judul: document.getElementById('galeriJudul').value,
+                url: finalUrl
+            });
+            saveDB();
+            renderGaleri();
+            closeModal('galeriModal');
+            e.target.reset();
+        }
+
+        function deleteGaleri(id) {
+            if(confirm("Hapus foto ini dari galeri?")) {
+                db.galeri = db.galeri.filter(i => i.id !== id);
+                saveDB();
+                renderGaleri();
+            }
+        }
+
+        // --- RENDER STRUKTUR ORGANISASI ---
+        function renderStruktur() {
+            const container = document.getElementById('strukturList');
+            container.innerHTML = db.struktur.map(item => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-center shadow-sm relative space-y-3">
+                    <button onclick="editStruktur('${item.id}')" class="dev-only hidden absolute top-3 right-3 p-1.5 text-sky-600 hover:bg-sky-50 rounded-lg">
+                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    </button>
+                    <div class="w-20 h-20 mx-auto rounded-full overflow-hidden border-2 border-sky-500/50 p-0.5">
+                        <img src="${item.foto}" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 block">${item.jabatan}</span>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm mt-0.5">${item.nama}</h4>
+                    </div>
+                </div>
+            `).join('');
+            updateDevUI();
+        }
+
+        function editStruktur(id) {
+            const item = db.struktur.find(s => s.id === id);
+            if(!item) return;
+            document.getElementById('strukturId').value = item.id;
+            document.getElementById('strukturJabatan').value = item.jabatan;
+            document.getElementById('strukturNama').value = item.nama;
+            document.getElementById('strukturPreview').src = item.foto;
+            currentUploadedBase64 = item.foto;
+            document.getElementById('strukturModal').classList.remove('hidden');
+        }
+
+        function saveStruktur(e) {
+            e.preventDefault();
+            const id = document.getElementById('strukturId').value;
+            const item = db.struktur.find(s => s.id === id);
+            if(item) {
+                item.nama = document.getElementById('strukturNama').value;
+                item.foto = currentUploadedBase64 || item.foto;
+                saveDB();
+                renderStruktur();
+            }
+            closeModal('strukturModal');
+        }
+
+        // --- RENDER JADWAL & PIKET ---
+        function renderJadwal() {
+            const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+            const daySelector = document.getElementById('daySelector');
+            daySelector.innerHTML = days.map(d => `
+                <button onclick="selectDay('${d}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${activeDay===d?'bg-sky-500 text-white shadow-md shadow-sky-500/20':'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50'}">
+                    ${d}
+                </button>
+            `).join('');
+
+            const dataHari = db.jadwal[activeDay] || { mapel: [], piket: [] };
+            
+            // Render Mapel List
+            const mapelList = document.getElementById('mapelList');
+            mapelList.innerHTML = dataHari.mapel.length ? dataHari.mapel.map((m, idx) => `
+                <li class="py-2.5 flex justify-between items-center">
+                    <span class="font-medium text-slate-700 dark:text-slate-300">${m}</span>
+                    <button onclick="deleteJadwalItem('mapel', ${idx})" class="dev-only hidden text-red-500 hover:text-red-700 text-xs">Hapus</button>
+                </li>
+            `).join('') : '<li class="py-3 text-xs text-slate-400 italic">Belum ada mata pelajaran.</li>';
+
+            // Render Piket List
+            const piketList = document.getElementById('piketList');
+            piketList.innerHTML = dataHari.piket.length ? dataHari.piket.map((p, idx) => `
+                <span class="inline-flex items-center px-3 py-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300 rounded-xl text-xs font-semibold">
+                    ${p}
+                    <button onclick="deleteJadwalItem('piket', ${idx})" class="dev-only hidden ml-1.5 text-amber-600 hover:text-red-600">×</button>
+                </span>
+            `).join('') : '<span class="text-xs text-slate-400 italic">Belum ada petugas piket.</span>';
+
+            updateDevUI();
+        }
+
+        function selectDay(day) {
+            activeDay = day;
+            renderJadwal();
+        }
+
+        function openJadwalModal(type) {
+            const val = prompt(`Tambah ${type === 'mapel' ? 'Mata Pelajaran (Contoh: 08:00 - Matematika)' : 'Nama Petugas Piket'}:`);
+            if(val) {
+                if(!db.jadwal[activeDay]) db.jadwal[activeDay] = { mapel: [], piket: [] };
+                db.jadwal[activeDay][type].push(val);
+                saveDB();
+                renderJadwal();
+            }
+        }
+
+        function deleteJadwalItem(type, index) {
+            db.jadwal[activeDay][type].splice(index, 1);
+            saveDB();
+            renderJadwal();
+        }
+
+        // --- RENDER MURID ---
+        function renderMurid() {
+            const query = (document.getElementById('searchMuridInput')?.value || '').toLowerCase();
+            const container = document.getElementById('muridList');
+            
+            const filtered = db.murid.filter(m => m.nama.toLowerCase().includes(query));
+
+            container.innerHTML = filtered.map(item => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex items-center space-x-3 relative">
+                    <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-sky-400">
+                        <img src="${item.foto}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300">#${item.absen}</span>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs truncate">${item.nama}</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">💡 ${item.hobi || '-'}</p>
+                    </div>
+                    <button onclick="deleteMurid('${item.id}')" class="dev-only hidden p-1 text-red-500 hover:bg-red-50 rounded">
+                        <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            `).join('');
+            updateDevUI();
+        }
+
+        function openMuridModal() {
+            currentUploadedBase64 = '';
+            document.getElementById('muridModal').classList.remove('hidden');
+        }
+
+        function saveMurid(e) {
+            e.preventDefault();
+            db.murid.push({
+                id: 'u_' + Date.now(),
+                absen: document.getElementById('muridAbsen').value,
+                nama: document.getElementById('muridNama').value,
+                hobi: document.getElementById('muridHobi').value,
+                foto: currentUploadedBase64 || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80'
+            });
+            saveDB();
+            renderMurid();
+            closeModal('muridModal');
+            e.target.reset();
+        }
+
+        function deleteMurid(id) {
+            if(confirm("Hapus murid dari daftar?")) {
+                db.murid = db.murid.filter(i => i.id !== id);
+                saveDB();
+                renderMurid();
+            }
+        }
+
+        // --- HELPER: FILE IMAGE READER (BASE64) ---
+        function handleImageUpload(e, previewId) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    currentUploadedBase64 = evt.target.result;
+                    const prev = document.getElementById(previewId);
+                    if(prev) {
+                        prev.src = currentUploadedBase64;
+                        prev.classList.remove('hidden');
+                        const placeholder = document.getElementById(`${previewId}Placeholder`);
+                        if(placeholder) placeholder.classList.add('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // --- DARK MODE TOGGLE ---
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIconDark').classList.toggle('hidden', !isDark);
+            document.getElementById('themeIconLight').classList.toggle('hidden', isDark);
+        }
+
+        // --- EXPORT / IMPORT / RESET LOCALSTORAGE ---
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "Backup_Kelas9E.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importDataTrigger() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function importData(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    db = imported;
+                    saveDB();
+                    renderAll();
+                    alert("Data kelas berhasil di-import!");
+                } catch(err) {
+                    alert("Format file JSON tidak valid.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetData() {
+            if(confirm("Apakah Anda yakin ingin mengembalikan semua data ke pengaturan awal pabrik?")) {
+                db = defaultData;
+                saveDB();
+                renderAll();
+                alert("Data berhasil di-reset.");
+            }
+        }
+    </script>
+</body>
+</html>
